@@ -9,7 +9,7 @@ if [ -f "$PID" ]; then
   echo -e "${YELLOW}⏳ Deteniendo Xray...${NC}"
   kill $(cat $PID)
   rm $PID
-  echo -e "${GREEN}✅ Xray se ha detenido con éxito.$>
+  echo -e "${GREEN}✅ Xray se ha detenido con éxito.${NC}"
 else
   echo -e "${RED}❌ Xray no está en ejecución.${NC}"
 fi
