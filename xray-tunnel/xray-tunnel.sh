@@ -1,14 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 BASE=~/xray-tunnel
-XRAY=$BASE/xray-xhttp
-MODULOS=$BASE/modulos
-source $MODULOS/modo-ultra-estable.sh
-PROXY=$BASE/proxychains4
-BIN=$XRAY/bin
-CONF=$XRAY/config.json
-LOG=$XRAY/log.txt
-PID=$XRAY/xray.pid
+MENU_DIR=$BASE/modulos/acciones
 
 GREEN='\033[1;32m'
 RED='\033[1;31m'
@@ -20,130 +13,35 @@ banner() {
   clear
   toilet -f pagga "NANASHI" | lolcat
   echo -e "${GREEN}"
-  echo "╔════════════════════════════════════╗"
-  echo "║ 🌀 Xray XHTTP - 🔥 Flow Nica 🔥     ║"
-  echo "╠════════════════════════════════════╣"
-  echo "║ 📁 Config: $CONF"
-  echo "║ 📡 Proxy: 127.00.1:10808"
-  echo "╚════════════════════════════════════╝"
-  echo -e "${NC}"
-}
-
-start_xray() {
-  banner
-  echo -e "${BLUE}🚀 Iniciando conexión Xray...${NC}"
-  nohup $BIN/xray run -config $CONF > $LOG 2>&1 &
-  echo $! > $PID
-  echo -e "${GREEN}✅ Xray corriendo con PID $(cat $PID)${NC}"
-  
-  activar_modo_ultra_estable
-}
-
-stop_xray() {
-  banner
-  if [ -f "$PID" ]; then
-    kill -9 $(cat $PID) && rm -f $PID
-    echo -e "${RED}🛑 Xray detenido${NC}"
-  else
-    echo -e "${YELLOW}⚠️ No hay proceso activo${NC}"
-  fi
-  
-  desactivar_modo_ultra_estable
-}
-
-verificar_ping() {
-  banner
-  echo -e "${BLUE}🔍 Verificando túnel con curl...${NC}"
-  curl --socks5 127.0.0.1:10808 https://api.ipify.org -m 5 && echo -e "${GREEN}✅ Túnel activo${NC}" || echo -e "${RED}❌ Fallo en la conexión${NC}"
-}
-
-verificar_proxychains() {
-  banner
-  echo -e "${BLUE}🔗 Verificando IP con proxychains4...${NC}"
-  $PROXY/bin/proxychains4 -f $PROXY/etc/proxychains.conf curl -s https://api.ipify.org && echo -e "${GREEN}✅ IP obtenida con proxychains4${NC}" || echo -e "${RED}❌ Fallo en proxychains4${NC}"
-}
-
-# 🆕 Función para cambiar la configuración
-change_config() {
-    banner
-    echo -e "${YELLOW}✏️ Ingresa los nuevos datos del VPS${NC}"
-    read -p "   ➡️ Dirección (IP o Dominio): " new_address
-    read -p "   ➡️ Puerto: " new_port
-    read -p "   ➡️ UUID (ID): " new_id
-    read -p "   ➡️ Host (para XHTTP): " new_host
-
-    # Actualiza el archivo de configuración con los nuevos valores
-    cat > $CONF <<EOF
-{
-  "log": {
-    "loglevel": "warning"
-  },
-  "inbounds": [{
-    "port": 10808,
-    "listen": "127.0.0.1",
-    "protocol": "socks",
-    "settings": {
-      "udp": true
-    }
-  }],
-  "outbounds": [{
-    "protocol": "vless",
-    "settings": {
-      "vnext": [{
-        "address": "$new_address",
-        "port": $new_port,
-        "users": [{
-          "id": "$new_id",
-          "encryption": "none"
-        }]
-      }]
-    },
-    "streamSettings": {
-      "network": "xhttp",
-      "xhttpSettings": {
-        "path": "/",
-        "xhttpMode": "auto",
-        "host": "$new_host"
-      }
-    }
-  }]
-}
-EOF
-    echo -e "${GREEN}✅ Configuración actualizada con éxito.${NC}"
-}
-
-actualizar_script() {
-  echo -e "${YELLOW}🔄 Actualizando menú desde GitHub...${NC}"
-  curl -s -o ~/xray-tunnel/xray-tunnel.sh \
-    https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh
-  chmod +x ~/xray-tunnel/xray-tunnel.sh
-  echo -e "${GREEN}✅ Menú actualizado correctamente.${NC}"
 }
 
 menu() {
   banner
-  echo -e "\n${BLUE}1️⃣ Iniciar conexión${NC}"
-  echo -e "${BLUE}2️⃣ Detener conexión${NC}"
-  echo -e "${BLUE}3️⃣ Verificar túnel (curl)${NC}"
-  echo -e "${BLUE}4️⃣ Verificar IP con proxychains4${NC}"
-  echo -e "${BLUE}5️⃣ Cambiar datos del VPS${NC}"
-  echo -e "${BLUE}6️⃣ Salir${NC}"
-  echo -e "${BLUE}7️⃣ Actualizar script${NC}"
-  read -p $'\n👉 Selección: ' opt
+  echo -e "   ${YELLOW}Menú Principal${NC}"
+  echo "----------------------"
+  echo -e "${BLUE}[01]${NC} = ${GREEN}Iniciar Conexió>
+  echo -e "${BLUE}[02]${NC} = ${YELLOW}Detener Conexi>
+  echo -e "${BLUE}[03]${NC} = ${GREEN}Verificar Túnel>
+  echo -e "${BLUE}[04]${NC} = ${GREEN}Verificar IP co>
+  echo -e "${BLUE}[05]${NC} = ${GREEN}Editar Datos de>
+  echo -e "${BLUE}[06]${NC} = ${YELLOW}Actualizar${NC>
+  echo -e "${BLUE}[0]${NC} = ${RED}Salir${NC}"
+  echo "----------------------"
+  read -p "Elige una opción: " opcion
+  echo ""
 
-  case $opt in
-    1) start_xray ;;
-    2) stop_xray ;;
-    3) verificar_ping ;;
-    4) verificar_proxychains ;;
-    5) change_config ;; # 🆕 Llamada a la nueva función
-    6) exit ;;
-    7) actualizar_script ;;
-    *) echo -e "${RED}❌ Opción inválida${NC}" ;;
+  case $opcion in
+    1) $MENU_DIR/start_xray.sh ;;
+    2) $MENU_DIR/stop_xray.sh ;;
+    3) $MENU_DIR/verificar_ping.sh ;;
+    4) $MENU_DIR/verificar_proxychains.sh ;;
+    5) $MENU_DIR/change_config.sh ;;
+    6) $MENU_DIR/actualizar_script.sh ;;
+    0) echo -e "${BLUE}Saliendo...${NC}"; exit 0 ;;
+    *) echo -e "${RED}Opción inválida.${NC}";;
   esac
+  read -p "Presione [Enter] para continuar..."
+  menu
 }
 
-while true; do
-  menu
-  read -p $'\n🔁 Presiona Enter para volver al menú...'
-done
+menu
