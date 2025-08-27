@@ -8,11 +8,12 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 # 📍 Rutas
-BASE_DIR="$HOME/xray-tunnel"
-MODULOS_DIR="$BASE_DIR/modulos/acciones"
-DESTINO="$MODULOS_DIR/mono.sh"
-INDEX_FILE="$BASE_DIR/modulos/modulos_index.txt"
-MENU_SCRIPT="$BASE_DIR/xray-tunnel.sh"
+BASE=~/xray-tunnel
+MENU_DIR=$BASE/modulos/acciones
+MENU=$BASE/xray-tunnel.sh
+DESTINO=$MENU_DIR/mono.sh
+INDEX_FILE=$BASE/modulos/modulos_index.txt
+
 URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh"
 
 # 🧠 Verificación de nueva versión desde GitHub
