@@ -114,6 +114,14 @@ EOF
     echo -e "${GREEN}✅ Configuración actualizada con éxito.${NC}"
 }
 
+actualizar_script() {
+  echo -e "${YELLOW}🔄 Actualizando menú desde GitHub...${NC}"
+  curl -s -o ~/xray-tunnel/xray-tunnel.sh \
+    https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh
+  chmod +x ~/xray-tunnel/xray-tunnel.sh
+  echo -e "${GREEN}✅ Menú actualizado correctamente.${NC}"
+}
+
 menu() {
   banner
   echo -e "\n${BLUE}1️⃣ Iniciar conexión${NC}"
@@ -122,6 +130,7 @@ menu() {
   echo -e "${BLUE}4️⃣ Verificar IP con proxychains4${NC}"
   echo -e "${BLUE}5️⃣ Cambiar datos del VPS${NC}"
   echo -e "${BLUE}6️⃣ Salir${NC}"
+  echo -e "${BLUE}7️⃣ Actualizar script${NC}"
   read -p $'\n👉 Selección: ' opt
 
   case $opt in
@@ -131,6 +140,7 @@ menu() {
     4) verificar_proxychains ;;
     5) change_config ;; # 🆕 Llamada a la nueva función
     6) exit ;;
+    7) actualizar_script ;;
     *) echo -e "${RED}❌ Opción inválida${NC}" ;;
   esac
 }
