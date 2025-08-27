@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 
 # 🎨 Colores
 BLUE='\033[1;34m'
@@ -8,10 +8,12 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 # 📍 Rutas
-DESTINO="/root/xray/modulos/acciones/mono.sh"
+BASE_DIR="$HOME/xray-tunnel"
+MODULOS_DIR="$BASE_DIR/modulos/acciones"
+DESTINO="$MODULOS_DIR/mono.sh"
+INDEX_FILE="$BASE_DIR/modulos/modulos_index.txt"
+MENU_SCRIPT="$BASE_DIR/xray-tunnel.sh"
 URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh"
-INDEX_FILE="/root/xray/modulos/modulos_index.txt"
-MODULOS_DIR="$(dirname "$0")"
 
 # 🧠 Verificación de nueva versión desde GitHub
 REMOTE_HASH=$(curl -s https://api.github.com/repos/OrtxzJxrdiel/config_termius/commits/main | grep sha | head -1 | cut -d '"' -f4)
@@ -32,6 +34,8 @@ if [ "$REMOTE_HASH" != "$LOCAL_HASH" ]; then
         if grep -q "#!/bin/bash" /tmp/mono_temp.sh; then
             mv /tmp/mono_temp.sh "$DESTINO"
             echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
+            echo -e "${GREEN}🔁 Reiniciando menú para aplicar cambios...${NC}"
+            exec bash "$MENU_SCRIPT"
         else
             echo -e "${RED}❌ Error: El archivo descargado no es válido.${NC}"
             rm /tmp/mono_temp.sh
