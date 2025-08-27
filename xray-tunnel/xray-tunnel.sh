@@ -2,6 +2,7 @@
 
 BASE=~/xray-tunnel
 MENU_DIR=$BASE/modulos/acciones
+bash $RED_DIR/actualizar_script.sh
 
 GREEN='\033[1;32m'
 RED='\033[1;31m'
@@ -17,16 +18,15 @@ banner() {
 
 menu() {
   banner
-  echo -e "   ${YELLOW}Menú Principal${NC}"
-  echo "----------------------"
-  echo -e "${BLUE}[01]${NC} = ${GREEN}Iniciar Conexió>
-  echo -e "${BLUE}[02]${NC} = ${YELLOW}Detener Conexi>
-  echo -e "${BLUE}[03]${NC} = ${GREEN}Verificar Túnel>
-  echo -e "${BLUE}[04]${NC} = ${GREEN}Verificar IP co>
-  echo -e "${BLUE}[05]${NC} = ${GREEN}Editar Datos de>
-  echo -e "${BLUE}[06]${NC} = ${YELLOW}Actualizar${NC>
+  echo -e "   ${YELLOW}MENÚ PRINCIPAL${NC}"
+  echo "=========================="
+  echo -e "${BLUE}[01]${NC} = ${GREEN}Iniciar Conexión${NC}"
+  echo -e "${BLUE}[02]${NC} = ${YELLOW}Detener Conexión${NC} ${RED}${NC}"
+  echo -e "${BLUE}[03]${NC} = ${GREEN}Verificar Túnel (curl)${NC} ${RED}${NC}"
+  echo -e "${BLUE}[04]${NC} = ${GREEN}Verificar IP con Proxychains4${NC} ${YELLOW}${NC}"
+  echo -e "${BLUE}[05]${NC} = ${GREEN}Editar Datos del VPS${NC}"
   echo -e "${BLUE}[0]${NC} = ${RED}Salir${NC}"
-  echo "----------------------"
+  echo "=========================="
   read -p "Elige una opción: " opcion
   echo ""
 
@@ -36,7 +36,6 @@ menu() {
     3) $MENU_DIR/verificar_ping.sh ;;
     4) $MENU_DIR/verificar_proxychains.sh ;;
     5) $MENU_DIR/change_config.sh ;;
-    6) $MENU_DIR/actualizar_script.sh ;;
     0) echo -e "${BLUE}Saliendo...${NC}"; exit 0 ;;
     *) echo -e "${RED}Opción inválida.${NC}";;
   esac
