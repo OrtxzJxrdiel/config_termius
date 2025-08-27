@@ -8,15 +8,13 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 # 📍 Rutas
-BASE=~/xray-tunnel
-MENU_DIR=$BASE/modulos/acciones
-MENU=$BASE/xray-tunnel.sh
-DESTINO=$MENU_DIR/mono.sh
-TEMP_FILE=$MENU_DIR/mono_temp.sh
-INDEX_FILE=$BASE/modulos/modulos_index.txt
-MODULOS_DIR=$MENU_DIR
-
-# ✅ URL corregida
+BASE="$HOME/xray-tunnel"
+MENU="$BASE/xray-tunnel.sh"
+MODULOS_DIR="$BASE/modulos/acciones"
+DESTINO="$MODULOS_DIR/mono.sh"
+TEMP_FILE="$MODULOS_DIR/mono_temp.sh"
+INDEX_FILE="$BASE/modulos/modulos_index.txt"
+LOG_FILE="$BASE/update.log"
 URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/main/xray-tunnel/xray-tunnel.sh"
 
 # 🧠 Verificación de nueva versión desde GitHub
@@ -32,15 +30,19 @@ if [ "$REMOTE_HASH" != "$LOCAL_HASH" ]; then
     read -r actualizar
     if [ "$actualizar" = "s" ]; then
         echo -e "${GREEN}🔄 Descargando nueva versión...${NC}"
+        mkdir -p "$MODULOS_DIR"
         curl -s -o "$TEMP_FILE" "$URL_RAW"
 
-        if [ -s "$TEMP_FILE" ] && grep -q "#!/bin/bash" "$TEMP_FILE"; then
+        # ✅ Validación del archivo descargado
+        if [ -s "$TEMP_FILE" ] && head -n 1 "$TEMP_FILE" | grep -q "^#!"; then
             mv "$TEMP_FILE" "$DESTINO"
             echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - Actualización exitosa" >> "$LOG_FILE"
             echo -e "${GREEN}🔁 Reiniciando menú...${NC}"
             exec bash "$MENU"
         else
             echo -e "${RED}❌ Error: El archivo descargado está vacío o no es válido.${NC}"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - Error de actualización" >> "$LOG_FILE"
             rm -f "$TEMP_FILE"
         fi
         exit
