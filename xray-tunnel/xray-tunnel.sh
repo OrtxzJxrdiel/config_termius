@@ -3,8 +3,8 @@
 BASE=~/xray-tunnel
 MENU_DIR=$BASE/modulos/acciones
 
-# Verificación automática de actualización y escaneo de módulos
-bash "$HOME/xray-tunnel/modulos/acciones/actualizar_script.sh"
+# Verificación automática de actualización y escaneo
+bash "$MENU_DIR/actualizar_script.sh"
 
 GREEN='\033[1;32m'
 RED='\033[1;31m'
