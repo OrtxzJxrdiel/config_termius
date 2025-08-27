@@ -12,6 +12,7 @@ BASE=~/xray-tunnel
 MENU_DIR=$BASE/modulos/acciones
 MENU=$BASE/xray-tunnel.sh
 DESTINO=$MENU_DIR/mono.sh
+TEMP_FILE=$MENU_DIR/mono_temp.sh
 INDEX_FILE=$BASE/modulos/modulos_index.txt
 
 URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh"
@@ -29,18 +30,17 @@ if [ "$REMOTE_HASH" != "$LOCAL_HASH" ]; then
     read -r actualizar
     if [ "$actualizar" = "s" ]; then
         echo -e "${GREEN}🔄 Descargando nueva versión...${NC}"
-        curl -s -o /tmp/mono_temp.sh "$URL_RAW"
+        curl -s -o "$TEMP_FILE" "$URL_RAW"
 
-        # ✅ Validación básica del archivo descargado
-        if grep -q "#!/bin/bash" /tmp/mono_temp.sh; then
-            mv /tmp/mono_temp.sh "$DESTINO"
-            echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
-            echo -e "${GREEN}🔁 Reiniciando menú para aplicar cambios...${NC}"
-            exec bash "$MENU_SCRIPT"
-        else
-            echo -e "${RED}❌ Error: El archivo descargado no es válido.${NC}"
-            rm /tmp/mono_temp.sh
-        fi
+if [ -s "$TEMP_FILE" ] && grep -q "#!/bin/bash" "$TEMP_FILE"; then
+    mv "$TEMP_FILE" "$DESTINO"
+    echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
+    echo -e "${GREEN}🔁 Reiniciando menú...${NC}"
+    exec bash "$MENU_SCRIPT"
+else
+    echo -e "${RED}❌ Error: El archivo descargado está vacío o no es válido.${NC}"
+    rm -f "$TEMP_FILE"
+fi
         exit
     else
         echo -e "${BLUE}✔️ Puedes actualizar más tarde desde el menú.${NC}"
