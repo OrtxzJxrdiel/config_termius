@@ -14,8 +14,10 @@ MENU=$BASE/xray-tunnel.sh
 DESTINO=$MENU_DIR/mono.sh
 TEMP_FILE=$MENU_DIR/mono_temp.sh
 INDEX_FILE=$BASE/modulos/modulos_index.txt
+MODULOS_DIR=$MENU_DIR
 
-URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh"
+# ✅ URL corregida
+URL_RAW="https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/main/xray-tunnel/xray-tunnel.sh"
 
 # 🧠 Verificación de nueva versión desde GitHub
 REMOTE_HASH=$(curl -s https://api.github.com/repos/OrtxzJxrdiel/config_termius/commits/main | grep sha | head -1 | cut -d '"' -f4)
@@ -32,15 +34,15 @@ if [ "$REMOTE_HASH" != "$LOCAL_HASH" ]; then
         echo -e "${GREEN}🔄 Descargando nueva versión...${NC}"
         curl -s -o "$TEMP_FILE" "$URL_RAW"
 
-if [ -s "$TEMP_FILE" ] && grep -q "#!/bin/bash" "$TEMP_FILE"; then
-    mv "$TEMP_FILE" "$DESTINO"
-    echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
-    echo -e "${GREEN}🔁 Reiniciando menú...${NC}"
-    exec bash "$MENU_SCRIPT"
-else
-    echo -e "${RED}❌ Error: El archivo descargado está vacío o no es válido.${NC}"
-    rm -f "$TEMP_FILE"
-fi
+        if [ -s "$TEMP_FILE" ] && grep -q "#!/bin/bash" "$TEMP_FILE"; then
+            mv "$TEMP_FILE" "$DESTINO"
+            echo -e "${GREEN}✅ Mono actualizado correctamente.${NC}"
+            echo -e "${GREEN}🔁 Reiniciando menú...${NC}"
+            exec bash "$MENU"
+        else
+            echo -e "${RED}❌ Error: El archivo descargado está vacío o no es válido.${NC}"
+            rm -f "$TEMP_FILE"
+        fi
         exit
     else
         echo -e "${BLUE}✔️ Puedes actualizar más tarde desde el menú.${NC}"
@@ -52,11 +54,9 @@ echo -e "${BLUE}┌────────────────────�
 echo -e "${BLUE}│        Servicios disponibles detectados     │${NC}"
 echo -e "${BLUE}└────────────────────────────────────────────┘${NC}"
 
-# 🧾 Cargar índice anterior
 touch "$INDEX_FILE"
 mapfile -t anteriores < "$INDEX_FILE"
 
-# 🔍 Detectar nuevos módulos
 nuevos=()
 for modulo in "$MODULOS_DIR"/*.sh; do
     nombre=$(basename "$modulo")
@@ -66,7 +66,6 @@ for modulo in "$MODULOS_DIR"/*.sh; do
     fi
 done
 
-# 🆕 Mostrar nuevos módulos detectados
 if [ "${#nuevos[@]}" -gt 0 ]; then
     termux-vibrate -d 100
     echo -e "${YELLOW}┌────────────────────────────────────────────┐${NC}"
@@ -77,5 +76,4 @@ if [ "${#nuevos[@]}" -gt 0 ]; then
     done
 fi
 
-# 📝 Actualizar índice
 ls "$MODULOS_DIR"/*.sh | xargs -n1 basename > "$INDEX_FILE"
