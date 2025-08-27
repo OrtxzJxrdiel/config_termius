@@ -1,0 +1,47 @@
+change_config() {
+    banner
+    echo -e "${YELLOW}✏️ Ingresa los nuevos datos del VPS${NC}"
+    read -p "   ➡️ Dirección (IP o Dominio): " new_address
+    read -p "   ➡️ Puerto: " new_port
+    read -p "   ➡️ UUID (ID): " new_id
+    read -p "   ➡️ Host (para XHTTP): " new_host
+
+    # Actualiza el archivo de configuración con los nuevos valores
+    cat > $CONF <<EOF
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [{
+    "port": 10808,
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  }],
+  "outbounds": [{
+    "protocol": "vless",
+    "settings": {
+      "vnext": [{
+        "address": "$new_address",
+        "port": $new_port,
+        "users": [{
+          "id": "$new_id",
+          "encryption": "none"
+        }]
+      }]
+    },
+    "streamSettings": {
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "/",
+        "xhttpMode": "auto",
+        "host": "$new_host"
+      }
+    }
+  }]
+}
+EOF
+    echo -e "${GREEN}✅ Configuración actualizada con éxito.${NC}"
+}
