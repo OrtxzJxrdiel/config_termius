@@ -6,7 +6,6 @@ XRAY=$BASE/xray-xhttp
 PROXY=$BASE/proxychains4
 BIN=$XRAY/bin
 MODULOS=$BASE/modulos
-mkdir -p $MODULOS
 CONF=$XRAY/config.json
 LOG=$XRAY/log.txt
 PID=$XRAY/xray.pid
@@ -22,13 +21,13 @@ NC='\033[0m'
 # 🔧 Preparar entorno
 echo -e "${BLUE}🔧 Preparando entorno Termux...${NC}"
 pkg update -y && pkg upgrade -y
-pkg install -y curl unzip proot git build-essential toilet ruby python
+pkg install -y curl unzip proot git build-essential toilet ruby python netcat
 gem install lolcat
 
 # 📁 Crear estructura
-mkdir -p $BIN $PROXY
+mkdir -p $BIN $PROXY $MODULOS
 
-# ⬇️ Descargar Xray-core (tu binario funcional)
+# ⬇️ Descargar Xray-core
 cd $BIN
 if [ ! -f "$BIN/xray" ]; then
   echo -e "${YELLOW}⬇️ Descargando Xray-core...${NC}"
@@ -84,20 +83,22 @@ if [ ! -f "$PROXY/proxychains4" ]; then
   cd src
   ./configure --prefix=$PROXY
   make && make install
-  
-  # MODIFICACIÓN AQUI:
-  # Se asegura de que la carpeta de configuración exista antes de escribir el archivo
+
   mkdir -p $PROXY/etc
   cat > $PROXY/etc/proxychains.conf <<EOF
+strict_chain
+proxy_dns
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+
 [ProxyList]
 socks5 127.0.0.1 10808
 EOF
   echo -e "${GREEN}✅ proxychains4 listo${NC}"
 fi
 
-# Crear módulo de modo ultra estable con proxychains4
-chmod +x ~/xray-tunnel/modulos/modo-ultra-estable.sh 2>/dev/null
-
+# 🛡️ Crear módulo de modo ultra estable
 cat > $MODULOS/modo-ultra-estable.sh <<'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
@@ -132,7 +133,7 @@ EOF
 
 chmod +x $MODULOS/modo-ultra-estable.sh
 
-# 📋 Script de menú interactivo
+# 📋 Crear menú interactivo
 cat > $MENU <<'EOM'
 #!/data/data/com.termux/files/usr/bin/bash
 
@@ -160,7 +161,7 @@ banner() {
   echo "║ 🌀 Xray XHTTP - 🔥 Flow Nica 🔥     ║"
   echo "╠════════════════════════════════════╣"
   echo "║ 📁 Config: $CONF"
-  echo "║ 📡 Proxy: 127.00.1:10808"
+  echo "║ 📡 Proxy: 127.0.0.1:10808"
   echo "╚════════════════════════════════════╝"
   echo -e "${NC}"
 }
@@ -172,7 +173,12 @@ start_xray() {
   echo $! > $PID
   echo -e "${GREEN}✅ Xray corriendo con PID $(cat $PID)${NC}"
 
-  # Activar modo ultra estable
+  echo -e "${YELLOW}⏳ Esperando a que el proxy esté disponible...${NC}"
+  for i in {1..10}; do
+    nc -z 127.0.0.1 10808 && break
+    sleep 1
+  done
+
   activar_modo_ultra_estable
 }
 
@@ -185,7 +191,6 @@ stop_xray() {
     echo -e "${YELLOW}⚠️ No hay proceso activo${NC}"
   fi
 
-  # Desactivar modo ultra estable
   desactivar_modo_ultra_estable
 }
 
@@ -250,6 +255,14 @@ EOF
     echo -e "${GREEN}✅ Configuración actualizada con éxito.${NC}"
 }
 
+actualizar_script() {
+  echo -e "${YELLOW}🔄 Actualizando menú desde GitHub...${NC}"
+  curl -s -o ~/xray-tunnel/xray-tunnel.sh \
+    https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh
+  chmod +x ~/xray-tunnel/xray-tunnel.sh
+  echo -e "${GREEN}✅ Menú actualizado correctamente.${NC}"
+}
+
 menu() {
   banner
   echo -e "\n${BLUE}1️⃣ Iniciar conexión${NC}"
@@ -258,6 +271,7 @@ menu() {
   echo -e "${BLUE}4️⃣ Verificar IP con proxychains4${NC}"
   echo -e "${BLUE}5️⃣ Cambiar datos del VPS${NC}"
   echo -e "${BLUE}6️⃣ Salir${NC}"
+  echo -e "${BLUE}7️⃣ Actualizar script${NC}"
   read -p $'\n👉 Selección: ' opt
 
   case $opt in
@@ -265,8 +279,9 @@ menu() {
     2) stop_xray ;;
     3) verificar_ping ;;
     4) verificar_proxychains ;;
-    5) change_config ;; # 🆕 Llamada a la nueva función
+    5) change_config ;;
     6) exit ;;
+    7) actualizar_script ;;
     *) echo -e "${RED}❌ Opción inválida${NC}" ;;
   esac
 }
@@ -281,5 +296,5 @@ chmod +x $MENU
 
 # 🎉 Final
 echo -e "\n${GREEN}✅ Instalación completa. Creando acceso directo...${NC}"
-ln -s $MENU $PREFIX/bin/menu
+ln -sf $MENU $PREFIX/bin/menu
 echo -e "${GREEN}✅ ¡Listo! Ahora solo escribe 'menu' para iniciar el script.${NC}"
