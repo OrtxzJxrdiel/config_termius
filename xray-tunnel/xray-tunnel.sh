@@ -25,7 +25,7 @@ menu() {
   echo -e "${BLUE}[04]${NC} = ${GREEN}Verificar IP con Proxychains4${NC} ${YELLOW}${NC}"
   echo -e "${BLUE}[05]${NC} = ${GREEN}Editar Datos del VPS${NC}"
   echo -e "${BLUE}[06]${NC} = ${YELLOW}Actualizar${NC}"
-  echo -e "${BLUE}[0]${NC} = ${RED}Salir${NC}"
+  echo -e "${RED}[0]${NC}  = ${RED}Salir${NC}"
   echo "=========================="
   read -p "Elige una opción: " opcion
   echo ""
