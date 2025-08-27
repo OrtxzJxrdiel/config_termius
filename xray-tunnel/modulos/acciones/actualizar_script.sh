@@ -25,5 +25,4 @@ echo "⚠️ Error al copiar archivos"
 rm -rf "$TMP_DIR"
 
 # Vibración y banner
-termux-vibrate -d 200
 echo -e "\n🎉 ¡Menú y módulos actualizados con flow nica! 🎉\n"
