@@ -1,4 +1,3 @@
-#!/data/data/com.termux/files/usr/bin/bash
 
 BASE=~/xray-tunnel
 XRAY=$BASE/xray-xhttp
@@ -35,8 +34,7 @@ start_xray() {
   nohup $BIN/xray run -config $CONF > $LOG 2>&1 &
   echo $! > $PID
   echo -e "${GREEN}✅ Xray corriendo con PID $(cat $PID)${NC}"
-
-  # Activar modo ultra estable
+  
   activar_modo_ultra_estable
 }
 
@@ -48,8 +46,7 @@ stop_xray() {
   else
     echo -e "${YELLOW}⚠️ No hay proceso activo${NC}"
   fi
-
-  # Desactivar modo ultra estable
+  
   desactivar_modo_ultra_estable
 }
 
