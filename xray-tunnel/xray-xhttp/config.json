@@ -1,0 +1,34 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [{
+    "port": 10808,
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  }],
+  "outbounds": [{
+    "protocol": "vless",
+    "settings": {
+      "vnext": [{
+        "address": "138.197.31.155",
+        "port": 80,
+        "users": [{
+          "id": "cf688aa4-c453-48e6-bb22-4b258ce494b6",
+          "encryption": "none"
+        }]
+      }]
+    },
+    "streamSettings": {
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "/",
+        "xhttpMode": "auto",
+        "host": "filter-ni.portal-universal.com"
+      }
+    }
+  }]
+}
