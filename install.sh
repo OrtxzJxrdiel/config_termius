@@ -59,10 +59,10 @@ cat > $CONF <<EOF
     "protocol": "vless",
     "settings": {
       "vnext": [{
-        "address": "138.197.31.155",
-        "port": 80,
+        "address": "",
+        "port": ,
         "users": [{
-          "id": "cf688aa4-c453-48e6-bb22-4b258ce494b6",
+          "id": "",
           "encryption": "none"
         }]
       }]
@@ -72,7 +72,7 @@ cat > $CONF <<EOF
       "xhttpSettings": {
         "path": "/",
         "xhttpMode": "auto",
-        "host": "filter-ni.portal-universal.com"
+        "host": ""
       }
     }
   }]
