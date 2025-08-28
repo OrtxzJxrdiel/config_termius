@@ -22,6 +22,7 @@ echo -e "${BLUE}🔧 Preparando entorno Termux...${NC}"
 pkg update -y && pkg upgrade -y
 pkg install -y curl unzip proot git build-essential toilet ruby python
 gem install lolcat
+pkg install termux-api
 
 # 📁 Crear estructura
 echo -e "${BLUE}📁 Creando estructura de archivos...${NC}"
