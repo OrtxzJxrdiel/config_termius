@@ -18,7 +18,7 @@ banner() {
 menu() {
   banner
   echo -e "   ${YELLOW}Menú Principal${NC}"
-  echo "=========================="
+  echo -e "${RED}=======================================${NC}"
   echo -e "${BLUE}[01]${NC} = ${GREEN}Iniciar Conexión${NC}"
   echo -e "${BLUE}[02]${NC} = ${YELLOW}Detener Conexión${NC} ${RED}${NC}"
   echo -e "${BLUE}[03]${NC} = ${GREEN}Verificar Túnel (curl)${NC} ${RED}${NC}"
@@ -26,7 +26,7 @@ menu() {
   echo -e "${BLUE}[05]${NC} = ${GREEN}Editar Datos del VPS${NC}"
   echo -e "${BLUE}[06]${NC} = ${YELLOW}Actualizar${NC}"
   echo -e "${RED}[0]${NC}  = ${RED}Salir${NC}"
-  echo "=========================="
+  echo -e "${RED}=======================================${NC}"
   read -p "Elige una opción: " opcion
   echo ""
 
