@@ -255,6 +255,7 @@ chmod +x $BASE/modulos/acciones/verificar_proxychains.sh
 cat > $BASE/modulos/acciones/actualizar_script.sh <<'EOM'
 #!/data/data/com.termux/files/usr/bin/bash
 
+ROOT_DIR="$(cd "$(dirname "$0")"/../.. && pwd)"
 TMP_DIR="$ROOT_DIR/tmp_update"
 REPO_URL="https://github.com/OrtxzJxrdiel/config_termius.git"
 
@@ -279,6 +280,7 @@ echo "⚠️ Error al copiar archivos"
 rm -rf "$TMP_DIR"
 
 # Vibración y banner
+command -v termux-vibrate >/dev/null && termux-vibrate -d 150
 echo -e "\n🎉 ¡Menú y módulos actualizados con flow nica! 🎉\n"
 EOM
 chmod +x $BASE/modulos/acciones/actualizar_script.sh
