@@ -255,19 +255,33 @@ chmod +x $BASE/modulos/acciones/verificar_proxychains.sh
 cat > $BASE/modulos/acciones/actualizar_script.sh <<'EOM'
 #!/data/data/com.termux/files/usr/bin/bash
 
-YELLOW='\033[1;33m'
-GREEN='\033[1;32m'
-NC='\033[0m'
+TMP_DIR="$ROOT_DIR/tmp_update"
+REPO_URL="https://github.com/OrtxzJxrdiel/config_termius.git"
 
-echo -e "${YELLOW}🔄 Actualizando menú desde GitHub...${NC}"
-curl -s -o ~/xray-tunnel/xray-tunnel.sh \
-  https://raw.githubusercontent.com/OrtxzJxrdiel/config_termius/refs/heads/main/xray-tunnel/xray-tunnel.sh
-chmod +x ~/xray-tunnel/xray-tunnel.sh
-echo -e "${GREEN}✅ Menú actualizado correctamente.${NC}"
+echo -e "\n[INFO] [LOW] => Clonando repositorio desde GitHub...\n"
+
+# Limpiar carpeta temporal
+rm -rf "$TMP_DIR"
+
+# Clonar repo
+git clone --depth=1 "$REPO_URL" "$TMP_DIR" || {
+    echo "❌ Error al clonar el repositorio"
+    exit 1
+}
+
+# Copiar solo archivos nuevos o modificados
+echo -e "\n[INFO] [LOW] => Actualizando archivos...\n"
+cp -ru "$TMP_DIR/xray-tunnel/"* "$ROOT_DIR/" && \
+echo "✅ Archivos actualizados correctamente" || \
+echo "⚠️ Error al copiar archivos"
+
+# Limpiar
+rm -rf "$TMP_DIR"
+
+# Vibración y banner
+echo -e "\n🎉 ¡Menú y módulos actualizados con flow nica! 🎉\n"
 EOM
 chmod +x $BASE/modulos/acciones/actualizar_script.sh
-
-echo -e "${GREEN}✅ Scripts de acción creados${NC}"
 
 # 📋 Crear script de menú principal
 echo -e "${BLUE}📝 Creando script de menú principal...${NC}"
