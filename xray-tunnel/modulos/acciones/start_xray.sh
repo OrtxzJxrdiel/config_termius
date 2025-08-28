@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
+bash "$(dirname "$0")/animacion_start.sh"
 
 # Este script inicia Xray
 BASE=~/xray-tunnel
